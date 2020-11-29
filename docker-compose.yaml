@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  virtuoso-loader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: virtuoso_loader
+    ports:
+      - 5000:5000
+    volumes:
+      - ./code/app.py:/code/app.py
+      - ./code/config.yaml:/code/config.yaml
+      - ${DUMP_DIR}:/dumps

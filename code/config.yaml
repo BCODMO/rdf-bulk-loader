@@ -1,0 +1,15 @@
+void:
+  bcodmo:
+    uri: 'http://www.bco-dmo.org/'
+    void: 'https://www.bco-dmo.org/.well-known/void'
+    triplestore:
+      virtuoso:
+        dump: 'local'
+        path: '/dumps/bcodmo'
+  lter:
+    uri: 'https://lternet.edu'
+    void: 'https://www.bco-dmo.org/lter/void'
+    triplestore:
+      virtuoso:
+        dump: 'local'
+        path: '/dumps/lter'
