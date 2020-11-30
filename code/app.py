@@ -5,6 +5,7 @@ import os
 import pwd
 from rdflib import Graph, Literal, Namespace, RDF, URIRef
 import requests
+import shutil
 import simplejson as json
 import sparql
 import traceback
@@ -30,7 +31,6 @@ def local_check_dump_path(path):
     lock_file = path + os.path.sep + 'locked'
     return os.path.exists(lock_file)
 
-
 def local_download_void_data_dump(url, path, user=None, group=None):
     data_dump_filename = url.rsplit('/', 1)[1]
     if not os.path.exists(path):
@@ -40,14 +40,19 @@ def local_download_void_data_dump(url, path, user=None, group=None):
             raise Exception(path + ' does not exist and could not be created')
     file = path + os.path.sep + data_dump_filename
 
-    r = requests.get(url, allow_redirects=True)
-    open(file, 'wb').write(r.content)
-    if user is not None: 
+    # https://stackoverflow.com/questions/16694907/download-large-file-in-python-with-requests
+    with requests.get(url, stream=True) as r:
+        with open(file, 'wb') as f:
+            shutil.copyfileobj(r.raw, f)
+
+
+    if user is not None:
         uid = pwd.getpwnam(user).pw_uid
         gid = grp.getgrnam(group).gr_gid if group is not None else -1
         app.logger.info('Setting permissions to: ' + user + ':' + group)
         os.chown(file, uid, gid)
     app.logger.info('Downloaded: ' + url + ' to ' + file)
+
 
 
 ### UTILS ###
