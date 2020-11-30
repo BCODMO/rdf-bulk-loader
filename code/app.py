@@ -1,6 +1,8 @@
 from flask import Flask, request, make_response, abort
+import grp
 import logging
 import os
+import pwd
 from rdflib import Graph, Literal, Namespace, RDF, URIRef
 import requests
 import simplejson as json
@@ -29,7 +31,7 @@ def local_check_dump_path(path):
     return os.path.exists(lock_file)
 
 
-def local_download_void_data_dump(url, path):
+def local_download_void_data_dump(url, path, user=None, group=None):
     data_dump_filename = url.rsplit('/', 1)[1]
     if not os.path.exists(path):
         try:
@@ -40,6 +42,11 @@ def local_download_void_data_dump(url, path):
 
     r = requests.get(url, allow_redirects=True)
     open(file, 'wb').write(r.content)
+    if user is not None: 
+        uid = pwd.getpwnam(user).pw_uid
+        gid = grp.getgrnam(group).gr_gid if group is not None else -1
+        app.logger.info('Setting permissions to: ' + user + ':' + group)
+        os.chown(file, uid, gid)
     app.logger.info('Downloaded: ' + url + ' to ' + file)
 
 
@@ -131,7 +138,7 @@ def virtuoso_graph_load():
     # Prepare the response
     res = {
         '@context': response_context(),
-        '@type' => 'schema:SearchAction',
+        '@type': 'schema:SearchAction',
         'request':{
             'parameters':{
                 'graph': graph,
@@ -152,11 +159,13 @@ def virtuoso_graph_load():
         # check for existing ready file
         remove_ready_file(dump_path)
 
+        local_user = triplestore_cfg.get('user', None)
+        local_group = triplestore_cfg.get('group', None)
         # Download the void.dataDumps
         void_dump_path = dump_path + os.path.sep + 'void'
         for data_dump in void_rdf.objects(graph_uri, VOID.dataDump):
             data_dump_url = str(data_dump)
-            local_download_void_data_dump(data_dump_url, void_dump_path)
+            local_download_void_data_dump(data_dump_url, void_dump_path, user=local_user, group=local_group)
             res['response']['void:dataDump'].append(data_dump_url)
 
         # Set the ready file
@@ -167,5 +176,5 @@ def virtuoso_graph_load():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
 

@@ -5,7 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: virtuoso_loader
+    restart: unless-stopped
+    container_name: rdf_loader
     ports:
       - 5000:5000
     volumes:

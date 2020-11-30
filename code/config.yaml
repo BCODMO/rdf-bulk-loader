@@ -7,7 +7,7 @@ void:
         dump: 'local'
         path: '/dumps/bcodmo'
   lter:
-    uri: 'https://lternet.edu'
+    uri: 'https://www.lternet.edu/'
     void: 'https://www.bco-dmo.org/lter/void'
     triplestore:
       virtuoso:
