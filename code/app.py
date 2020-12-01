@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, abort
+from flask import Flask, request, make_response, abort, send_from_directory
 import grp
 import logging
 import os
@@ -12,7 +12,7 @@ import traceback
 from werkzeug.exceptions import HTTPException
 import yaml
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='/web/static')
 
 ### LOCAL ###
 def write_ready_file(path):
@@ -116,6 +116,12 @@ def handle_exception(e):
 
 
 ### ROUTING ###
+@app.route('/logs/<path:path>', methods=['GET'])
+def view_log_file(path):
+    app.logger.debug('PATH: ' + path)
+    return send_from_directory('/logs', path, mimetype='text/plain')
+
+
 @app.route('/void-graph-loader', methods=['GET'])
 def virtuoso_graph_load():
     graph = request.args.get('graph')

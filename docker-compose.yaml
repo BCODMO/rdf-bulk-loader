@@ -12,4 +12,6 @@ services:
     volumes:
       - ./code/app.py:/code/app.py
       - ./code/config.yaml:/code/config.yaml
+      - ./static:/web/static
       - ${DUMP_DIR}:/dumps
+      - ${VIRTUOSO_LOG_DIR}:/logs/virtuoso
