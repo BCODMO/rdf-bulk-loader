@@ -42,8 +42,15 @@ def local_download_void_data_dump(url, path, user=None, group=None):
 
     # https://stackoverflow.com/questions/16694907/download-large-file-in-python-with-requests
     with requests.get(url, stream=True) as r:
+        #with open(file, 'wb') as f:
+        #    shutil.copyfileobj(r.raw, f)
+        r.raise_for_status()
         with open(file, 'wb') as f:
-            shutil.copyfileobj(r.raw, f)
+            for chunk in r.iter_content(chunk_size=8192):
+                # If you have chunk encoded response uncomment if
+                # and set chunk_size parameter to None.
+                #if chunk:
+                f.write(chunk)
 
 
     if user is not None:
