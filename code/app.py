@@ -12,7 +12,7 @@ import simplejson as json
 from SPARQLWrapper import SPARQLWrapper, POST, BASIC, DIGEST
 import traceback
 import unicodedata
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 from werkzeug.exceptions import HTTPException
 import yaml
 
@@ -159,6 +159,8 @@ def file_graph_load():
     file = request.args.get('file')
     if file is None:
         abort(404, description="File not provided")
+    else:
+        file = unquote(file)
 
     rdf_format = request.args.get('format')
     if rdf_format is None:
