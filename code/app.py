@@ -119,7 +119,7 @@ def handle_exception(e):
 @app.route('/logs/<path:path>', methods=['GET'])
 def view_log_file(path):
     app.logger.debug('PATH: ' + path)
-    return send_from_directory('/logs', path, mimetype='text/plain')
+    return send_from_directory('/logs', path, mimetype='text/plain', cache_timeout=0)
 
 
 @app.route('/void-graph-loader', methods=['GET'])
@@ -194,5 +194,5 @@ def virtuoso_graph_load():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0')
 
