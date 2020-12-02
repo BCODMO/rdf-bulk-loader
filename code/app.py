@@ -180,7 +180,7 @@ def file_graph_load():
     if file_server is not None:
         if 'dpp2prov' == file_server:
             file_kwargs = {
-                headers:{
+                'headers':{
                     'X-API-KEY': os.environ['dpp2prov_api_key']
                 }
             }
