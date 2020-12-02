@@ -135,12 +135,12 @@ def handle_exception(e):
 @app.route('/logs/<path:path>', methods=['GET'])
 def view_log_file(path):
     app.logger.debug('PATH: ' + path)
-    return send_from_directory('/logs', path, mimetype='text/plain', cache_timeout=-1)
+    return send_from_directory('/logs', path, mimetype='text/plain', cache_timeout=0)
 
 @app.route('/rdf/turtle/<path>', methods=['GET'])
 def view_rdf_turtle_file(path):
     app.logger.debug('RDF: ' + path)
-    return send_from_directory('/web/rdf', path, mimetype='text/turtle', cache_timeout=-1)
+    return send_from_directory('/web/rdf', path, mimetype='text/turtle', cache_timeout=0)
 
 @app.route('/file-graph-loader', methods=['GET'])
 def file_graph_load():

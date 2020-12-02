@@ -6,6 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M 
     container_name: rdf_loader
     ports:
       - 5000:5000
