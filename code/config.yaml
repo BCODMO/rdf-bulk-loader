@@ -13,3 +13,7 @@ void:
       virtuoso:
         dump: 'local'
         path: '/dumps/lter'
+triplestore:
+  virtuoso:
+    endpoint: 'http://ec2-34-198-164-165.compute-1.amazonaws.com:8890/sparql-auth'
+    auth: 'basic'

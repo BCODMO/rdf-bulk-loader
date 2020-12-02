@@ -12,6 +12,11 @@ services:
     volumes:
       - ./code/app.py:/code/app.py
       - ./code/config.yaml:/code/config.yaml
-      - ./static:/web/static
+      - ./rdf:/web/rdf
       - ${DUMP_DIR}:/dumps
       - ${VIRTUOSO_LOG_DIR}:/logs/virtuoso
+    environment:
+      BASE_URL: ${BASE_URL}
+      virtuoso_user: ${virtuoso_user}
+      virtuoso_pswd: ${virtuoso_pswd}
+      dpp2prov_api_key: ${dpp2prov_api_key}
