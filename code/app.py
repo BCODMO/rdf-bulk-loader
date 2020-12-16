@@ -323,7 +323,7 @@ def virtuoso_graph_load():
         app.logger.info('Dump path: ' + void_dump_path)
         for data_dump in void_rdf.objects(graph_uri, VOID.dataDump):
             data_dump_url = str(data_dump)
-            app.loggger.info(data_dump_url)
+            app.logger.info(data_dump_url)
             local_download_void_data_dump(data_dump_url, void_dump_path, user=local_user, group=local_group)
             res['response']['void:dataDump'].append(data_dump_url)
 

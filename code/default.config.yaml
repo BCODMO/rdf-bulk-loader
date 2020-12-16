@@ -20,9 +20,11 @@ triplestore:
 fileserver:
   dpp2prov:
     headers:
-      name: X-API-KEY
-      env: dpp2prov_api_key
+      -
+        name: X-API-KEY
+        env: dpp2prov_api_key
   counter:
     headers:
-      name: X-API-KEY
-      env: counter_api_key
+      -
+        name: X-API-KEY
+        env: counter_api_key
