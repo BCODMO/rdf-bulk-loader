@@ -7,7 +7,7 @@ void:
         dump: 'local'
         path: '/dumps/bcodmo'
   lter:
-    uri: 'https://www.lternet.edu/'
+    uri: 'urn:lternet'
     void: 'https://www.bco-dmo.org/lter/void'
     triplestore:
       virtuoso:
@@ -15,5 +15,14 @@ void:
         path: '/dumps/lter'
 triplestore:
   virtuoso:
-    endpoint: 'http://ec2-34-198-164-165.compute-1.amazonaws.com:8890/sparql-auth'
+    endpoint: 'http://example.com/sparql-auth'
     auth: 'basic'
+fileserver:
+  dpp2prov:
+    headers:
+      name: X-API-KEY
+      env: dpp2prov_api_key
+  counter:
+    headers:
+      name: X-API-KEY
+      env: counter_api_key

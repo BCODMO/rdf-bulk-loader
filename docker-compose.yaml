@@ -10,13 +10,13 @@ services:
       resources:
         limits:
           cpus: '1.00'
-          memory: 512M 
+          memory: 512M
     container_name: rdf_loader
     ports:
       - 5000:5000
     volumes:
       - ./code/app.py:/code/app.py
-      - ./code/config.yaml:/code/config.yaml
+      - ${CONFIG_FILE}:/code/config.yaml
       - ./rdf:/web/rdf
       - ${DUMP_DIR}:/dumps
       - ${VIRTUOSO_LOG_DIR}:/logs/virtuoso
@@ -25,3 +25,9 @@ services:
       virtuoso_user: ${virtuoso_user}
       virtuoso_pswd: ${virtuoso_pswd}
       dpp2prov_api_key: ${dpp2prov_api_key}
+      counter_api_key: ${counter_api_key}
+
+networks:
+  default:
+    external:
+      name: virtuoso_network

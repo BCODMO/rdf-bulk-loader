@@ -38,7 +38,8 @@ def local_check_dump_path(path):
     return os.path.exists(lock_file)
 
 def download_url(url, file, **kwargs):
-    print(kwargs)
+    app.logger.info(kwargs)
+    app.logger.info(url)
     # https://stackoverflow.com/questions/16694907/download-large-file-in-python-with-requests
     with requests.get(url, stream=True, **kwargs) as r:
         r.raise_for_status()
@@ -168,6 +169,7 @@ def file_graph_load():
 
     # get the latest configuration
     cfg = read_config()
+
     if 'triplestore' not in cfg:
         abort(404, description="No triplestore configuration")
     ts_cfg = cfg['triplestore'].get(triplestore, None)
@@ -179,14 +181,16 @@ def file_graph_load():
 
     file_kwargs = None
     file_server = request.args.get('server')
-    if file_server is not None:
-        if 'dpp2prov' == file_server:
-            file_kwargs = {
-                'headers':{
-                    'X-API-KEY': os.environ['dpp2prov_api_key']
-                }
-            }
+    if file_server is not None and 'fileserver' in cfg and file_server in cfg['fileserver']:
+        file_kwargs = {}
+        custom_request_cfg = cfg['fileserver'][file_server]
+        if 'headers' in custom_request_cfg:
+            file_kwargs['headers'] = {}
+            for header in custom_request_cfg['headers']:
+                if 'env' in header:
+                    file_kwargs['headers'][header['name']] = os.environ[header['env']]
 
+    app.logger.info(file_kwargs)
     #if 'path' not in ts_cfg:
     ##    abort(404, description="No triplstore dump path in configuration")
     #dump_path = ts_cfg['path']
@@ -232,8 +236,10 @@ def file_graph_load():
         if pswd_var not in os.environ:
             abort(404, description="No triplestore password")
         if 'basic' == auth:
+            app.logger.debug('BASIC Auth: ' + os.environ[user_var] + ':' + os.environ[pswd_var])
             sparql.setHTTPAuth(BASIC)
         elif 'digest' == auth:
+            app.logger.debug('DIGEST Auth: ' + os.environ[user_var] + ':' + os.environ[pswd_var])
             sparql.setHTTPAuth(DIGEST)
         sparql.setCredentials(os.environ[user_var], os.environ[pswd_var])
     sparql.setMethod(POST)
@@ -314,8 +320,10 @@ def virtuoso_graph_load():
         local_group = triplestore_cfg.get('group', None)
         # Download the void.dataDumps
         void_dump_path = dump_path + os.path.sep + 'void'
+        app.logger.info('Dump path: ' + void_dump_path)
         for data_dump in void_rdf.objects(graph_uri, VOID.dataDump):
             data_dump_url = str(data_dump)
+            app.loggger.info(data_dump_url)
             local_download_void_data_dump(data_dump_url, void_dump_path, user=local_user, group=local_group)
             res['response']['void:dataDump'].append(data_dump_url)
 
