@@ -30,4 +30,4 @@ services:
 networks:
   default:
     external:
-      name: virtuoso_network
+      name: docker-virtuoso_default
